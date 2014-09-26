@@ -14,4 +14,4 @@ This module's files should be placed in /site/modules/FirstSteps/
 
 #### Support forum
 
-https://processwire.com/talk/topic/FirstSteps/
+https://processwire.com/talk/topic/7728-module-firststeps/
