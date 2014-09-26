@@ -102,7 +102,7 @@ class FirstSteps extends WireData implements Module {
     </script>
 _LISTA;
 				$event->return = str_replace("</body>","$eljs</body>",$event->return);
-				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle"></i>Tutorial</a>';
+				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle fa-2x"></i>&nbsp;&nbsp;Tutorial</a>';
 				$menup = '<div id="masthead" class="masthead ui-helper-clearfix">';
 				$event->return = str_replace("$menup","$menup $botonm",$event->return);
 
