@@ -1,0 +1,175 @@
+<?php
+
+/**
+ * First Steps Processwire
+ * @author  Luis Santiago "blad"
+ * 
+ * ProcessWire 2.x 
+ * Copyright (C) 2010 by Ryan Cramer 
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * 
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FirstSteps extends WireData implements Module {
+
+
+	public static function getModuleInfo() {
+
+		return array(
+			'title' => 'FirstSteps', 
+			'author' => 'Blad',
+			'version' => 1, 
+			'summary' => 'Tutorial for Processwire',
+			'href' => '',
+			'singular' => true, 
+			'autoload' => true, 
+			'icon' => 'question', 
+			);
+	}
+
+
+	public function init() {
+
+				$this->config->scripts->add($this->config->urls->FirstSteps . 'FirstSteps.js'); 
+				$this->config->styles->add($this->config->urls->FirstSteps . 'FirstSteps.css'); 
+
+
+	}
+
+		public function ready() {
+		$esteproceso = wire('page')->process;
+
+			if($this->page->template == 'admin' && $esteproceso == 'ProcessPageList'){ 
+				$this->addHookAfter('Page::render', $this, 'TutorialPageList');
+			}
+
+			if($this->page->template == 'admin' && $esteproceso == 'ProcessModule'){ 
+				$this->addHookAfter('Page::render', $this, 'TutorialModules');
+			}
+		}
+
+
+// TUTORIAL PAGELIST
+
+		public function TutorialPageList(HookEvent $event) {
+			if($this->page->template == 'admin'){ 
+
+				$page = $event->object; 				
+				$eljs = <<<_LISTA
+		 <script type="text/javascript">
+			      function startIntro(){
+			        var intro = introJs();
+			          intro.setOptions({
+			            steps: [
+			              {
+			                intro: "<h1>Welcome to the Processwire Tutorial!</h1><hr>Processwire is a Content Management Framework designed to be powerful and scalable without the complexity in so many other systems.",
+
+			              },
+			              {
+			                element: '.PageListRoot',
+			                intro: "<h1>Page list</h1><hr>The first thing you see after logging in is a Sitemap. This contains the hierarchical structure of the website. You can navigate through this hierarchy by just clicking.",
+			                position: 'bottom'
+			              },
+			              {
+			                element: '.PageListActions',
+			                intro: '<h1>Actions</h1><hr>This pages view is more than just a Sitemap. You can create,edit,view or move pages.',
+			                position: 'bottom'
+			              },
+			              {
+			                element: '#topnav',
+			                intro: '<h1>Admin navigation</h1><hr>This navigation is created with the childrens of the Admin page. Each page has a process.',
+			                position: 'bottom'
+			              },
+			              {
+			                element: '.fa-wrench',
+			                intro: '<h1>Account Settings</h1><hr>Here you can edit your user name, password, language, theme and email.',
+			                position: 'bottom'
+			              },
+						  {
+			                element: '#ProcessPageSearchForm',
+			                intro: '<h1>Search Engine</h1><hr>Using this tool you can find any page,template,installed module or field.',
+			                position: 'bottom'
+			              }
+
+			            ]
+			          });
+
+			          intro.start();
+			      }
+    </script>
+_LISTA;
+				$event->return = str_replace("</body>","$eljs</body>",$event->return);
+				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle"></i>Tutorial</a>';
+				$menup = '<div id="masthead" class="masthead ui-helper-clearfix">';
+				$event->return = str_replace("$menup","$menup $botonm",$event->return);
+
+			}
+		}
+
+// MODULES TUTORIAL
+
+public function TutorialModules(HookEvent $event) {
+			if($this->page->template == 'admin'){ 
+
+				$page = $event->object; 				
+				$eljs = <<<_MODULOS
+		 <script type="text/javascript">
+			      function startIntro(){
+			        var intro = introJs();
+			          intro.setOptions({
+			            steps: [
+
+			              {
+			                element: '.PageListRoot',
+			                intro: "<h1>Processwire is built around a modular architecture</h1><hr>A module is a type of plugin that extends the capability of ProcessWire. A module can also be a mini-application that uses ProcessWire as as a sort of web operating system.</br></br> Modules can be loaded on-demand or automatically on every request. Modules may also attach hooks to ProcessWire API functions to modify or extend their behavior.",
+			                position: 'bottom'
+			              },
+			              {
+			                element: '#_tab_site_modules',
+			                intro: '<h1>Site modules</h1><hr>The third party modules are in this tab. You can install modules uploading the module folder to /site/modules/ ',
+			                position: 'bottom'
+			              },
+			              {
+			                element: '#_tab_core_modules',
+			                intro: '<h1>Core modules</h1><hr>This modules are already included with the ProcessWire core, but not necessarily installed.',
+			                position: 'bottom'
+			              },
+			              {
+			                element: '#_tab_new_modules',
+			                intro: '<h1>New module</h1><hr>Here you can upload and install modules.',
+			                position: 'bottom'
+			              },
+						  {
+			                element: '#reset_modules',
+			                intro: '<h1>Check modules</h1><hr>Use this button to find new modules in /site/modules.',
+			                position: 'bottom'
+			              },
+			              {
+			                intro: '<h1>Useful links</h1><hr><a href="http://modules.processwire.com/">- Modules repository</a></br><a href="http://wiki.processwire.com/index.php/Module_Creation">- Module Creation</a></br><a href="https://processwire.com/talk/forum/4-modulesplugins/">- Modules Forum</a></br><a href="http://modules.processwire.com/modules/helloworld/">- Hello World Example module</a>'
+			              }
+
+			            ]
+			          });
+
+			          intro.start();
+			      }
+    </script>
+_MODULOS;
+				$event->return = str_replace("</body>","$eljs</body>",$event->return);
+				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle fa-2x"></i>&nbsp;&nbsp;Tutorial</a>';
+				$menup = '<div id="masthead" class="masthead ui-helper-clearfix">';
+				$event->return = str_replace("$menup","$menup $botonm",$event->return);
+
+			}
+		}
+
+
+
+		
+		
+}
+
+
