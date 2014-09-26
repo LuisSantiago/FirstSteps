@@ -23,7 +23,7 @@ class FirstSteps extends WireData implements Module {
 			'author' => 'Blad',
 			'version' => 1, 
 			'summary' => 'Tutorial for Processwire',
-			'href' => '',
+			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
 			'singular' => true, 
 			'autoload' => true, 
 			'icon' => 'question', 
