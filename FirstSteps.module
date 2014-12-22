@@ -19,7 +19,7 @@ class FirstSteps extends WireData implements Module {
 		return array(
 			'title' => 'FirstSteps', 
 			'author' => 'Blad, Nico',
-			'version' => '1.5', 
+			'version' => '1.5.1', 
 			'summary' => 'Introduction for Processwire',
 			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
 			'singular' => true, 
@@ -74,8 +74,12 @@ class FirstSteps extends WireData implements Module {
 	/* helper */
 
 	public function hookAddTutorial(HookEvent $event) {
+		// special treatment for default admin themes
+		$style = '';
+		if($this->user->admin_theme == 'AdminThemeReno') $style = ' style="margin-top:9px;"';
+		
 		// this is the markup of the tutorial button
-		$button = '<a id="openTutorialButton"><i class="fa fa-question-circle"></i>'.$this->_('What is this?').'</a>';
+		$button = '<a id="openTutorialButton"'.$style.'><i class="fa fa-question-circle"></i>'.$this->_('What is this?').'</a>';
 			
 		// convert the steps aray into json so intro.js can read it
 		$script = '<script>var tutorialData = '.json_encode($this->steps).';</script>';
