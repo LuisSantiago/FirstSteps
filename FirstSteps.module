@@ -20,154 +20,163 @@ class FirstSteps extends WireData implements Module {
 
 		return array(
 			'title' => 'FirstSteps', 
-			'author' => 'Blad',
-			'version' => 1, 
-			'summary' => 'Tutorial for Processwire',
+			'author' => 'Blad, Nico',
+			'version' => '1.2', 
+			'summary' => 'Introduction for Processwire',
 			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
 			'singular' => true, 
-			'autoload' => true, 
-			'icon' => 'question', 
-			);
+			'autoload' => true
+		);
+	}
+	
+	private $steps = array();
+
+	public function ready() {
+		if($this->page->template != 'admin') return;
+		
+		// load javascript only if admin
+		$this->modules->get('JqueryCore');
+		$this->modules->get('JqueryUI');
+		
+		$this->config->styles->add($this->config->urls->FirstSteps . 'FirstSteps.css');
+		$this->config->scripts->add($this->config->urls->FirstSteps . 'intro.js');  
+		$this->config->scripts->add($this->config->urls->FirstSteps . 'FirstSteps.js');
+		
+		// load steps of a tutorial if existing
+		$pageProcess = wire('page')->process;
+
+		switch($pageProcess) {
+			case 'ProcessPageList':
+				$this->tutorialPageList();
+			break;
+			case 'ProcessModule':
+				$this->tutorialModule();
+			break;
+		}
+		
+		// only add tutorial button if steps existing
+		if(count($this->steps)) { 
+			$this->addHookAfter('Page::render', $this, 'hookAddTutorial');
+		}
 	}
 
 
-	public function init() {
+	/* helper */
 
-				$this->config->scripts->add($this->config->urls->FirstSteps . 'FirstSteps.js'); 
-				$this->config->styles->add($this->config->urls->FirstSteps . 'FirstSteps.css'); 
+	public function hookAddTutorial(HookEvent $event) {
+		// this is the markup of the tutorial button
+		$button = '<a id="openTutorialButton"><i class="fa fa-question-circle fa"></i> Tutorial</a>';
+			
+		// convert the steps aray into json so intro.js can read it
+		$script = '<script>var tutorialData = '.json_encode($this->steps).';</script>';
+			
+		// inject
+		$event->return = preg_replace('%<a id\=[\'|\"]logo[\'|\"].*<\/a>%Uis', '$0'.$button.$script, $event->return);	
+	}
+	
 
-
+	private function addStep($title = '', $text, $element = '', $position = 'bottom') {
+		// steps are only vald if text included
+		if($text == '') return false;
+		
+		// intro and position are never empty so it's save to add them while initializing the new array
+		$step = array(
+			'intro' => (($title) ? '<h1>'.html_entity_decode($title).'</h1>' : '').html_entity_decode($text),
+			'position' => $position
+		);
+		
+		// only add  element if element is not empty. Otherwise intro.js will produce an error
+		if($element) $step['element'] = $element;
+		
+		// add the step
+		$this->steps[] = $step;
 	}
 
-		public function ready() {
-		$esteproceso = wire('page')->process;
-
-			if($this->page->template == 'admin' && $esteproceso == 'ProcessPageList'){ 
-				$this->addHookAfter('Page::render', $this, 'TutorialPageList');
-			}
-
-			if($this->page->template == 'admin' && $esteproceso == 'ProcessModule'){ 
-				$this->addHookAfter('Page::render', $this, 'TutorialModules');
-			}
-		}
-
-
-// TUTORIAL PAGELIST
-
-		public function TutorialPageList(HookEvent $event) {
-			if($this->page->template == 'admin'){ 
-
-				$page = $event->object; 				
-				$eljs = <<<_LISTA
-		 <script type="text/javascript">
-			      function startIntro(){
-			        var intro = introJs();
-			          intro.setOptions({
-			            steps: [
-			              {
-			                intro: "<h1>Welcome to the Processwire Tutorial!</h1><hr>Processwire is a Content Management Framework designed to be powerful and scalable without the complexity in so many other systems.",
-
-			              },
-			              {
-			                element: '.PageListRoot',
-			                intro: "<h1>Page list</h1><hr>The first thing you see after logging in is a Sitemap. This contains the hierarchical structure of the website. You can navigate through this hierarchy by just clicking.",
-			                position: 'bottom'
-			              },
-			              {
-			                element: '.PageListActions',
-			                intro: '<h1>Actions</h1><hr>This pages view is more than just a Sitemap. You can create,edit,view or move pages.',
-			                position: 'bottom'
-			              },
-			              {
-			                element: '#topnav',
-			                intro: '<h1>Admin navigation</h1><hr>This navigation is created with the childrens of the Admin page. Each page has a process.',
-			                position: 'bottom'
-			              },
-			              {
-			                element: '.fa-wrench',
-			                intro: '<h1>Account Settings</h1><hr>Here you can edit your user name, password, language, theme and email.',
-			                position: 'bottom'
-			              },
-						  {
-			                element: '#ProcessPageSearchForm',
-			                intro: '<h1>Search Engine</h1><hr>Using this tool you can find any page,template,installed module or field.',
-			                position: 'bottom'
-			              }
-
-			            ]
-			          });
-
-			          intro.start();
-			      }
-    </script>
-_LISTA;
-				$event->return = str_replace("</body>","$eljs</body>",$event->return);
-				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle fa-2x"></i>&nbsp;&nbsp;Tutorial</a>';
-				$menup = '<div id="masthead" class="masthead ui-helper-clearfix">';
-				$event->return = str_replace("$menup","$menup $botonm",$event->return);
-
-			}
-		}
-
-// MODULES TUTORIAL
-
-public function TutorialModules(HookEvent $event) {
-			if($this->page->template == 'admin'){ 
-
-				$page = $event->object; 				
-				$eljs = <<<_MODULOS
-		 <script type="text/javascript">
-			      function startIntro(){
-			        var intro = introJs();
-			          intro.setOptions({
-			            steps: [
-
-			              {
-			                element: '.PageListRoot',
-			                intro: "<h1>Processwire is built around a modular architecture</h1><hr>A module is a type of plugin that extends the capability of ProcessWire. A module can also be a mini-application that uses ProcessWire as as a sort of web operating system.</br></br> Modules can be loaded on-demand or automatically on every request. Modules may also attach hooks to ProcessWire API functions to modify or extend their behavior.",
-			                position: 'bottom'
-			              },
-			              {
-			                element: '#_tab_site_modules',
-			                intro: '<h1>Site modules</h1><hr>The third party modules are in this tab. You can install modules uploading the module folder to /site/modules/ ',
-			                position: 'bottom'
-			              },
-			              {
-			                element: '#_tab_core_modules',
-			                intro: '<h1>Core modules</h1><hr>This modules are already included with the ProcessWire core, but not necessarily installed.',
-			                position: 'bottom'
-			              },
-			              {
-			                element: '#_tab_new_modules',
-			                intro: '<h1>New module</h1><hr>Here you can upload and install modules.',
-			                position: 'bottom'
-			              },
-						  {
-			                element: '#reset_modules',
-			                intro: '<h1>Check modules</h1><hr>Use this button to find new modules in /site/modules.',
-			                position: 'bottom'
-			              },
-			              {
-			                intro: '<h1>Useful links</h1><hr><a href="http://modules.processwire.com/">- Modules repository</a></br><a href="http://wiki.processwire.com/index.php/Module_Creation">- Module Creation</a></br><a href="https://processwire.com/talk/forum/4-modulesplugins/">- Modules Forum</a></br><a href="http://modules.processwire.com/modules/helloworld/">- Hello World Example module</a>'
-			              }
-
-			            ]
-			          });
-
-			          intro.start();
-			      }
-    </script>
-_MODULOS;
-				$event->return = str_replace("</body>","$eljs</body>",$event->return);
-				$botonm = '<a href="javascript:void(0);" onclick="startIntro();" id="empezar"><i class="fa fa-question-circle fa-2x"></i>&nbsp;&nbsp;Tutorial</a>';
-				$menup = '<div id="masthead" class="masthead ui-helper-clearfix">';
-				$event->return = str_replace("$menup","$menup $botonm",$event->return);
-
-			}
-		}
 
 
 
+	/* tutorials */
+
+	public function tutorialPageList() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('Welcome to the Processwire Tutorial!'), 
+			$this->_('Processwire is a Content Management Framework designed to be powerful and scalable without the complexity in so many other systems.')
+		);
+		
+		$this->addStep(
+			$this->_('Page list'), 
+			$this->_('The first thing you see after logging in is a Sitemap. This contains the hierarchical structure of the website. You can navigate through this hierarchy by just clicking.'),
+			'.PageListRoot'
+		);
+		
+		$this->addStep(
+			$this->_('Actions'), 
+			$this->_('This pages view is more than just a Sitemap. You can create,edit,view or move pages.'),
+			'.PageListActions'
+		);
+		
+		$this->addStep(
+			$this->_('Admin navigation'), 
+			$this->_('This navigation is created with the childrens of the Admin page. Each page has a process.'),
+			'#topnav'
+		);
+		
+		$this->addStep(
+			$this->_('Account Settings'), 
+			$this->_('Here you can edit your user name, password, language, theme and email.'),
+			'.fa-wrench'
+		);
+		
+		$this->addStep(
+			$this->_('Search Engine'), 
+			$this->_('Using this tool you can find any page,template,installed module or field.'),
+			'#ProcessPageSearchForm'
+		);
+		
+	}
+
+
+	
+	public function tutorialModule() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('Processwire is built around a modular architecture'), 
+			$this->_('A module is a type of plugin that extends the capability of ProcessWire. A module can also be a mini-application that uses ProcessWire as as a sort of web operating system.</br></br> Modules can be loaded on-demand or automatically on every request. Modules may also attach hooks to ProcessWire API functions to modify or extend their behavior.'),
+			'.PageListRoot'
+		);
+		
+		$this->addStep(
+			$this->_('Site modules'), 
+			$this->_('The third party modules are in this tab. You can install modules uploading the module folder to /site/modules/'),
+			'#_tab_site_modules'
+		);
+		
+		$this->addStep(
+			$this->_('Core modules'), 
+			$this->_('This modules are already included with the ProcessWire core, but not necessarily installed.'),
+			'#_tab_core_modules'
+		);
+		
+		$this->addStep(
+			$this->_('New modules'), 
+			$this->_('Here you can upload and install modules.'),
+			'#_tab_new_modules'
+		);
+		
+		$this->addStep(
+			$this->_('Check modules'), 
+			$this->_('Use this button to find new modules in /site/modules.'),
+			'#reset_modules'
+		);
+		
+		$this->addStep(
+			$this->_('Useful links'), 
+			$this->_('<a href="http://modules.processwire.com/">- Modules repository</a></br><a href="http://wiki.processwire.com/index.php/Module_Creation">- Module Creation</a></br><a href="https://processwire.com/talk/forum/4-modulesplugins/">- Modules Forum</a></br><a href="http://modules.processwire.com/modules/helloworld/">- Hello World Example module</a>')
+		);
+		
+		
+	}
 		
 		
 }
