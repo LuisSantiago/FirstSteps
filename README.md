@@ -1,5 +1,6 @@
 # FirstSteps module for Processwire based on intro.js
 @author  Luis Santiago "blad"
+@author  The Superhero Nico Knoll "Nico"
 
 ProcessWire 2.x 
 
