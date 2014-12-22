@@ -1,8 +1,8 @@
 <?php
 
 /**
- * First Steps Processwire
- * @author  Luis Santiago "blad"
+ * First Steps with Processwire
+ * @author  Luis Santiago "blad", Nico Knoll
  * 
  * ProcessWire 2.x 
  * Copyright (C) 2010 by Ryan Cramer 
@@ -15,13 +15,11 @@
 
 class FirstSteps extends WireData implements Module {
 
-
 	public static function getModuleInfo() {
-
 		return array(
 			'title' => 'FirstSteps', 
 			'author' => 'Blad, Nico',
-			'version' => '1.2', 
+			'version' => '1.5', 
 			'summary' => 'Introduction for Processwire',
 			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
 			'singular' => true, 
@@ -52,6 +50,18 @@ class FirstSteps extends WireData implements Module {
 			case 'ProcessModule':
 				$this->tutorialModule();
 			break;
+			case 'ProcessField':
+				$this->tutorialField();
+			break;
+			case 'ProcessTemplate':
+				$this->tutorialTemplate();
+			break;
+			case 'ProcessPageAdd':
+				$this->tutorialPageAdd();
+			break;
+			case 'ProcessLanguage':
+				$this->tutorialLanguage();
+			break;
 		}
 		
 		// only add tutorial button if steps existing
@@ -65,7 +75,7 @@ class FirstSteps extends WireData implements Module {
 
 	public function hookAddTutorial(HookEvent $event) {
 		// this is the markup of the tutorial button
-		$button = '<a id="openTutorialButton"><i class="fa fa-question-circle fa"></i> Tutorial</a>';
+		$button = '<a id="openTutorialButton"><i class="fa fa-question-circle"></i>'.$this->_('What is this?').'</a>';
 			
 		// convert the steps aray into json so intro.js can read it
 		$script = '<script>var tutorialData = '.json_encode($this->steps).';</script>';
@@ -100,7 +110,7 @@ class FirstSteps extends WireData implements Module {
 	public function tutorialPageList() {
 		// steps are php functions now so they can be multilang
 		$this->addStep(
-			$this->_('Welcome to the Processwire Tutorial!'), 
+			$this->_('Welcome to Processwire!'), 
 			$this->_('Processwire is a Content Management Framework designed to be powerful and scalable without the complexity in so many other systems.')
 		);
 		
@@ -112,7 +122,7 @@ class FirstSteps extends WireData implements Module {
 		
 		$this->addStep(
 			$this->_('Actions'), 
-			$this->_('This pages view is more than just a Sitemap. You can create,edit,view or move pages.'),
+			$this->_('This pages view is more than just a Sitemap. You can create, edit, view or move pages.'),
 			'.PageListActions'
 		);
 		
@@ -125,13 +135,32 @@ class FirstSteps extends WireData implements Module {
 		$this->addStep(
 			$this->_('Account Settings'), 
 			$this->_('Here you can edit your user name, password, language, theme and email.'),
-			'.fa-wrench'
+			'#userinfo',
+			'left'
 		);
 		
 		$this->addStep(
 			$this->_('Search Engine'), 
 			$this->_('Using this tool you can find any page,template,installed module or field.'),
 			'#ProcessPageSearchForm'
+		);
+		
+		$this->addStep(
+			$this->_('What to do now?'), 
+			$this->_('If you\'re using ProcessWire for the first time the links below will help you to understand how the system works and guide you to your first viewable page.<br><br>').
+			sprintf($this->_('- <a href="%s">Create a field</a><br>'), $this->config->urls->admin.'setup/field/').
+			sprintf($this->_('- <a href="%s">Create a template</a> and add the field to it<br>'), $this->config->urls->admin.'setup/template/').
+			sprintf($this->_('- <a href="%s">Create a page</a> using this template<br>'), $this->config->urls->admin.'page/add/?parent_id=1').
+			sprintf($this->_('- <a href="%s">Create a template file</a> to display the page'), $this->config->urls->admin.'setup/template/')
+		);
+		
+		
+		$this->addStep(
+			$this->_('Learn more'), 
+			$this->_('Here are some resources which contain additional information about ProcessWire:<br><br>').
+			$this->_('- <a href="http://processwire.com/docs/tutorials/" target="_blank">Tutorials</a> <br>').
+			$this->_('- <a href="http://modules.processwire.com/" target="_blank">Find new modules</a><br>').
+			$this->_('- <a href="https://processwire.com/talk/" target="_blank">Get answers in the forum</a>')
 		);
 		
 	}
@@ -142,7 +171,7 @@ class FirstSteps extends WireData implements Module {
 		// steps are php functions now so they can be multilang
 		$this->addStep(
 			$this->_('Processwire is built around a modular architecture'), 
-			$this->_('A module is a type of plugin that extends the capability of ProcessWire. A module can also be a mini-application that uses ProcessWire as as a sort of web operating system.</br></br> Modules can be loaded on-demand or automatically on every request. Modules may also attach hooks to ProcessWire API functions to modify or extend their behavior.'),
+			$this->_('A module is a type of plugin that extends the capability of ProcessWire. A module can also be a mini-application that uses ProcessWire as as a sort of web operating system.<br><br>Modules can be loaded on-demand or automatically on every request. Modules may also attach hooks to ProcessWire API functions to modify or extend their behavior.'),
 			'.PageListRoot'
 		);
 		
@@ -172,13 +201,111 @@ class FirstSteps extends WireData implements Module {
 		
 		$this->addStep(
 			$this->_('Useful links'), 
-			$this->_('<a href="http://modules.processwire.com/">- Modules repository</a></br><a href="http://wiki.processwire.com/index.php/Module_Creation">- Module Creation</a></br><a href="https://processwire.com/talk/forum/4-modulesplugins/">- Modules Forum</a></br><a href="http://modules.processwire.com/modules/helloworld/">- Hello World Example module</a>')
+			$this->_('- <a href="http://modules.processwire.com/">Modules repository</a><br>').
+			$this->_('- <a href="http://wiki.processwire.com/index.php/Module_Creation">Module Creation</a><br>').
+			$this->_('- <a href="https://processwire.com/talk/forum/4-modulesplugins/">Modules Forum</a><br>').
+			$this->_('- <a href="http://modules.processwire.com/modules/helloworld/">Hello World Example module</a>')
 		);
 		
 		
 	}
+	
+	
+	public function tutorialField() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('What are fields?'), 
+			$this->_('All fields ("Inputfields") in ProcessWire are custom fields defined by the user. Every field has a type (called "Fieldtype") which determines the possible input. ProcessWire includes several fieldtypes by default including those that support text, numbers, files, images, page references, URLs, email addresses, dates and comments. Additional fieldtypes are available as <a href="http://modules.processwire.com/categories/fieldtype/" target="_blank">3rd party modules</a>.')
+		);
 		
+		$this->addStep(
+			$this->_('Learn more about fields'), 
+			$this->_('Here are some resources which contain additional information about fields:<br><br>').
+			$this->_('- <a href="http://youtu.be/IHqnLQy9R1A?t=2m34s" target="_blank">Video Tutorial</a> <br>').
+			$this->_('- <a href="http://processwire.com/docs/tutorials/hello-worlds/page3" target="_blank">Written Tutorial</a> <br>').
+			$this->_('- <a href="http://modules.processwire.com/categories/fieldtype/" target="_blank">Discover more Fieldtypes</a><br>').
+			$this->_('- <a href="https://processwire.com/talk/" target="_blank">Get Answers in the Forum</a><br><br>').
+			$this->_('- <i>API Documentation: <a href="https://processwire.com/api/variables/fields/" target="_blank">$fields</a></i>')
+		);
+			
+	}
+	
+	
+	public function tutorialTemplate() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('What are templates?'), 
+			sprintf($this->_('Templates in ProcessWire are mainly custom forms made of <a href="%s">custom fields</a>. Every page in ProcessWire is assigned to a template, and a template may be shared among multiple pages. If you\'re editing a page in the backend you will see and be able to edit the fields assigned to the page\'s template.<br><br>It is also the source of access control, caching and other settings shared among pages.'),
+			$this->config->urls->admin.'setup/field/?showInfo=1')
+		);
 		
+		$this->addStep(
+			$this->_('How to display a templates?'), 
+			$this->_('Every template has an associated PHP file, referred to as the "template file". It has to lay in "/site/templates/" and has to have the template\'s name. <i>(E.g.: "helloworld.php" is assigned to he template "helloworld")</i>. This file handles the output for any pages assigned to the template.<br><br>The template-file is provided with several <a href="http://processwire.com/api/variables/" target="_blank">API variables</a>. The most notable is the <a href="http://processwire.com/api/variables/page/" target="_blank">$page</a> API variable, which contains all the data of the current page being viewed.')
+		);
+		
+		$this->addStep(
+			$this->_('Learn more about templates'), 
+			$this->_('Here are some resources which contain additional information about templates:<br><br>- <a href="http://youtu.be/IHqnLQy9R1A?t=4m29s" target="_blank">Video Tutorial</a> <br>').
+			$this->_('- <a href="http://processwire.com/docs/tutorials/hello-worlds/page2" target="_blank">Written Tutorial: The Template</a> <br>').
+			$this->_('- <a href="http://processwire.com/docs/tutorials/hello-worlds/page4" target="_blank">Written Tutorial: The Template File</a> <br>').
+			$this->_('- <a href="http://processwire.com/api/templates/" target="_blank">More Information About the Template File</a> <br>').
+			$this->_('- <a href="http://cheatsheet.processwire.com/" target="_blank">API Variables Cheatsheet</a> <br>').
+			$this->_('- <a href="https://processwire.com/talk/" target="_blank">Get Answers in the Forum</a><br><br>').
+			$this->_('- <i>API Documentation: <a href="https://processwire.com/api/variables/templates/" target="_blank">$templates</a></i>')
+		);
+			
+	}
+	
+	public function tutorialPageAdd() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('What is a page?'), 
+			sprintf($this->_('Pages are the foundation of ProcessWire. Almost everything is based on them. Pages are used to store data and make it quickly accessible. Each page is associated to one <a href="%s">template</a> which determines the spectrum of fields that can be used for this page. Pages also contain information about the author, creation date, visibility, status, etc.'), $this->config->urls->admin.'setup/template/?showInfo=1')
+		);
+		
+		$this->addStep(
+			$this->_('Learn more about pages'), 
+			$this->_('Here are some resources which contain additional information about pages:<br><br>').
+			$this->_('- <a href="http://youtu.be/IHqnLQy9R1A?t=6m18s" target="_blank">Video Tutorial</a> <br>').
+			$this->_('- <a href="http://processwire.com/docs/tutorials/hello-worlds/page2" target="_blank">Written Tutorial</a> <br>').
+			$this->_('- <a href="https://processwire.com/talk/" target="_blank">Get Answers in the Forum</a><br><br>').
+			$this->_('- <i>API Documentation: <a href="https://processwire.com/api/variables/page/" target="_blank">$page</a></i><br>').
+			$this->_('- <i>API Documentation: <a href="https://processwire.com/api/variables/pages/" target="_blank">$pages</a></i>')
+		);
+	
+	}
+	
+	
+	public function tutorialLanguage() {
+		// steps are php functions now so they can be multilang
+		$this->addStep(
+			$this->_('How to add a language?'), 
+			sprintf($this->_('To translate the admin backend you can use pre-translated <a href="http://modules.processwire.com/categories/language-pack/" target="_blank">Language Packs</a> or translate it yourself. To add Language Packs easier you can use <a href="https://github.com/NicoKnoll/LanguageInstantInstall" target="_blank">this module</a>.<br><br>Each user is associated to one language. You can change this language at "<a href="%s">Access &rarr; Users &rarr; (username)</a>". Regular visitors of your page are treated as "guest" user so the guest user\'s language will be the default language of your webpage.<br><br>You can change the language <a href="http://processwire.com/api/multi-language-support/multi-language-fields/#getting-and-setting" target="_blank">in runtime</a>.'), $this->config->urls->admin.'access/users/')
+		);
+		
+		$this->addStep(
+			$this->_('Multi-language fields'), 
+			sprintf($this->_('To translate a text field you have to change it\'s type e.g. from "Text" to "TextLanguage". This will cause that a subfield for each language is shown when you\'re editing a page. ProcessWire will automatically choose the right subfield regarding the set language for output so you don\'t have to change a lot in your <a href="%s">template files</a>.<br><br>You can make other strings in templates or modules translatable, too, by using the <a href="http://processwire.com/api/multi-language-support/code-i18n/" target="_blank">gettext like __() function</a>.'), $this->config->urls->admin.'setup/template/?showInfo=1')
+		);
+		
+		$this->addStep(
+			$this->_('Learn more about languages'), 
+			$this->_('Here are some resources which contain additional information about languages in ProcessWire:<br><br>').
+			$this->_('- <a href="https://www.youtube.com/watch?v=PEetje9obtw" target="_blank">Video Tutorial: __()</a><br>').
+			$this->_('- <a href="https://processwire.com/api/multi-language-support/code-i18n/" target="_blank">Written Tutorial: __()</a><br>').
+			$this->_('- <a href="https://www.youtube.com/watch?v=eq-9GQCT0lw" target="_blank">Video Tutorial: Multi-language-fields</a><br>').
+			$this->_('- <a href="https://processwire.com/api/multi-language-support/multi-language-fields/" target="_blank">Written Tutorial: Multi-language-fields</a><br>').
+			$this->_('- <a href="http://modules.processwire.com/categories/language-pack/" target="_blank">Language Packs</a><br>').
+			$this->_('- <a href="https://processwire.com/talk/" target="_blank">Get Answers in the Forum</a><br><br>').
+			$this->_('- <i>API Documentation: <a href="https://processwire.com/api/multi-language-support/" target="_blank">Languages</a></i>s')
+		);
+			
+	}
+	
+	
+	public function ___uninstall() {
+		setcookie("wire_firsttime", "", time()-3600, '/');
+	}
+	
 }
-
-
