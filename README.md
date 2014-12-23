@@ -18,23 +18,23 @@ This module's files should be placed in /site/modules/FirstSteps/
 As with version 1.6.0 your now able to use FirstSteps in your Process modules, too.
 The only requirement is that they have a "___execute()" function and an own page, which every Process module should have anyway.
 
-####Example:
+**Example:**
 Add the following code inside your "___execute()" function:
 
 ```php
 public function ___execute() {
   $firstSteps = $this->modules->get('FirstStepsHelper');
 		
-		$firstSteps->addStep(
-			'title', 
-			'content',
-			'#selector', // like #wrapper
-			'position' // bottom, top, left, right
-		);
-		
-		$firstStepsRendered = $firstSteps->render();
-		
-		return $firstStepsRendered;
+	$firstSteps->addStep(
+		'title', 
+		'content',
+		'#selector', // like #wrapper
+		'position' // bottom, top, left, right
+	);
+	
+	$firstStepsRendered = $firstSteps->render();
+	
+	return $firstStepsRendered;
 }
 ```
 
