@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * First Steps with Processwire
+ * @author  Luis Santiago "blad", Nico Knoll
+ * 
+ * ProcessWire 2.x 
+ * Copyright (C) 2010 by Ryan Cramer 
+ * Licensed under GNU/GPL v2, see LICENSE.TXT
+ * 
+ * http://www.processwire.com
+ * http://www.ryancramer.com
+ *
+ */
+
+class FirstStepsHelper extends WireData implements Module {
+
+	public static function getModuleInfo() {
+		return array(
+			'title' => 'FirstStepsHelper', 
+			'author' => 'Blad, Nico',
+			'version' => '1.6.0', 
+			'summary' => '[helper] Introduction for Processwire',
+			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
+			'singular' => false, 
+			'autoload' => false,
+			'requires' => 'FirstSteps',
+			'installs' => 'FirstSteps'
+		);
+	}
+	
+	public $steps = array();
+	
+	public function render() {
+		if($this->page->template != 'admin') return;
+		
+		// special treatment for default admin themes
+		$style = '';
+		if($this->user->admin_theme == 'AdminThemeReno') $style = ' style="margin-top:9px;"';
+		
+		// this is the markup of the tutorial button
+		$button = '<a id="openTutorialButton"'.$style.'><i class="fa fa-question-circle"></i>'.$this->_('What is this?').'</a>';
+			
+		// convert the steps aray into json so intro.js can read it
+		$script = '<script>var tutorialData = '.json_encode($this->steps).';$("#openTutorialButton").insertAfter("#logo");</script>';
+			
+		// inject
+		return $button.$script;	
+	}
+	
+
+	public function addStep($title = '', $text, $element = '', $position = 'bottom') {
+		// steps are only vald if text included
+		if($text == '') return false;
+		
+		// intro and position are never empty so it's save to add them while initializing the new array
+		$step = array(
+			'intro' => (($title) ? '<h1>'.html_entity_decode($title).'</h1>' : '').html_entity_decode($text),
+			'position' => $position
+		);
+		
+		// only add  element if element is not empty. Otherwise intro.js will produce an error
+		if($element) $step['element'] = $element;
+		
+		// add the step
+		$this->steps[] = $step;
+	}
+
+}
