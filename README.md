@@ -1,5 +1,5 @@
-# FirstSteps module for Processwire based on intro.js
-@author Luis Santiago "blad" & Nico Knoll "Nico"
+# FirstSteps module for Processwire <br>based on intro.js
+*@author:* Luis Santiago "blad" & Nico Knoll "nico"
 
 ProcessWire 2.4+ 
 
@@ -13,7 +13,7 @@ ProcessWire 2.4+
 This module's files should be placed in /site/modules/FirstSteps/. Then go to "modules" and hit "refresh". Afterwards "FirstSteps" and "FirstStepsHelper" should be displayed in your modules list. Then install "FirstSteps" and "FirstStepsHelper" will get installed automatically.
 
 
-# How to use it
+## How to use it
 
 If steps for a Process page should be available this module will generate a "What is this?" button and place it next to the ProcessWire logo.
 
@@ -25,6 +25,7 @@ After you hit this button the explanations are going to pop up.
 ## How to use it in YOUR module
 
 As with version 1.6.0 your now able to use FirstSteps in your Process modules, too.
+
 The only requirement is that they have a "___execute()" function and an own page, which every Process module should have anyway.
 
 **Example:**

@@ -2,7 +2,7 @@
 
 /**
  * First Steps with Processwire
- * @author  Luis Santiago "blad", Nico Knoll
+ * @author Luis Santiago "blad", Nico Knoll "nico"
  * 
  * ProcessWire 2.x 
  * Copyright (C) 2010 by Ryan Cramer 
@@ -17,14 +17,14 @@ class FirstSteps extends WireData implements Module {
 
 	public static function getModuleInfo() {
 		return array(
-			'title' => 'FirstSteps', 
-			'author' => 'Blad, Nico',
-			'version' => '1.6.0', 
-			'summary' => 'Introduction for Processwire',
-			'href' => 'https://github.com/LuisSantiago/FirstSteps/',
-			'singular' => false, 
-			'autoload' => true,
-			'installs' => 'FirstStepsHelper'
+			'title' 		=> 'FirstSteps', 
+			'author' 	=> 'Blad, Nico',
+			'version' 	=> '1.6.0', 
+			'summary' 	=> 'Introductions for Processwire Core.',
+			'href' 		=> 'https://github.com/LuisSantiago/FirstSteps/',
+			'singular' 	=> false, 
+			'autoload' 	=> true,
+			'installs' 	=> 'FirstStepsHelper'
 		);
 	}
 	
@@ -74,6 +74,7 @@ class FirstSteps extends WireData implements Module {
 		}
 	
 	}
+	
 	
 	/* helper */
 	public function hookAddTutorial(HookEvent $event) {
