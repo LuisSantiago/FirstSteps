@@ -69,7 +69,7 @@ class FirstSteps extends WireData implements Module {
 		}
 		
 		// only add tutorial button if steps existing
-		if(count($this->helper->hasSteps())) { 
+		if($this->helper->hasSteps()) { 
 			$this->addHookAfter('Page::render', $this, 'hookAddTutorial');
 		}
 	
