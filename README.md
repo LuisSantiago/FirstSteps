@@ -18,7 +18,7 @@ Add the following code inside your "___execute()" function:
 
 ```php
 public function ___execute() {
-  $firstSteps = $this->modules->get('FirstStepsHelper');
+	$firstSteps = $this->modules->get('FirstStepsHelper');
 		
 	$firstSteps->addStep(
 		'title', 
