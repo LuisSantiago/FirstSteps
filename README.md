@@ -1,19 +1,14 @@
 # FirstSteps module for Processwire based on intro.js
 @author  Luis Santiago "blad" & The Superhero Nico Knoll "Nico"
 
-ProcessWire 2.x 
+ProcessWire 2.4+ 
 
-
-#### Details
-
-Tutorials ...etc
-
-#### Installation
+### Installation
 
 This module's files should be placed in /site/modules/FirstSteps/
 
 
-#### How to use it in YOUR module
+### How to use it in YOUR module
 
 As with version 1.6.0 your now able to use FirstSteps in your Process modules, too.
 The only requirement is that they have a "___execute()" function and an own page, which every Process module should have anyway.
@@ -39,6 +34,6 @@ public function ___execute() {
 ```
 
 
-#### Support forum
+### Support forum
 
 https://processwire.com/talk/topic/7728-module-firststeps/
