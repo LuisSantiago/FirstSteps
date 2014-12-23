@@ -69,7 +69,7 @@ class FirstSteps extends WireData implements Module {
 		}
 		
 		// only add tutorial button if steps existing
-		if(count($this->helper->steps)) { 
+		if(count($this->helper->hasSteps())) { 
 			$this->addHookAfter('Page::render', $this, 'hookAddTutorial');
 		}
 	
@@ -83,8 +83,7 @@ class FirstSteps extends WireData implements Module {
 	
 
 	/* tutorials */
-
-	public function tutorialPageList() {
+	private function tutorialPageList() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('Welcome to Processwire!'), 
@@ -144,7 +143,7 @@ class FirstSteps extends WireData implements Module {
 
 
 	
-	public function tutorialModule() {
+	private function tutorialModule() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('Processwire is built around a modular architecture'), 
@@ -165,6 +164,18 @@ class FirstSteps extends WireData implements Module {
 		);
 		
 		$this->helper->addStep(
+			$this->_('Configurable modules'), 
+			$this->_('This is a list containing all of the installed modules containing a "config" page.'),
+			'#_tab_configurable_modules'
+		);
+		
+		$this->helper->addStep(
+			$this->_('Installable modules'), 
+			$this->_('This is a list containing all of the modules which are currently not installed.'),
+			'#_tab_uninstalled_modules'
+		);
+		
+		$this->helper->addStep(
 			$this->_('New modules'), 
 			$this->_('Here you can upload and install modules.'),
 			'#_tab_new_modules'
@@ -173,11 +184,13 @@ class FirstSteps extends WireData implements Module {
 		$this->helper->addStep(
 			$this->_('Check modules'), 
 			$this->_('Use this button to find new modules in /site/modules.'),
-			'#reset_modules'
+			'#reset_modules',
+			'left'
 		);
 		
 		$this->helper->addStep(
-			$this->_('Useful links'), 
+			$this->_('Learn more about modules'), 
+			$this->_('Here are some resources which contain additional information about modules:<br><br>').
 			$this->_('- <a href="http://modules.processwire.com/">Modules repository</a><br>').
 			$this->_('- <a href="http://wiki.processwire.com/index.php/Module_Creation">Module Creation</a><br>').
 			$this->_('- <a href="https://processwire.com/talk/forum/4-modulesplugins/">Modules Forum</a><br>').
@@ -188,7 +201,7 @@ class FirstSteps extends WireData implements Module {
 	}
 	
 	
-	public function tutorialField() {
+	private function tutorialField() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('What are fields?'), 
@@ -208,7 +221,7 @@ class FirstSteps extends WireData implements Module {
 	}
 	
 	
-	public function tutorialTemplate() {
+	private function tutorialTemplate() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('What are templates?'), 
@@ -234,7 +247,7 @@ class FirstSteps extends WireData implements Module {
 			
 	}
 	
-	public function tutorialPageAdd() {
+	private function tutorialPageAdd() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('What is a page?'), 
@@ -254,7 +267,7 @@ class FirstSteps extends WireData implements Module {
 	}
 	
 	
-	public function tutorialLanguage() {
+	private function tutorialLanguage() {
 		// steps are php functions now so they can be multilang
 		$this->helper->addStep(
 			$this->_('How to add a language?'), 

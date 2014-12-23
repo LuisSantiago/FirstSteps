@@ -424,3 +424,8 @@ text-decoration: none;
   font-weight: normal;
   font-family: "Helvetica Neue",Arial,sans-serif;
 }
+
+
+.introjs-tooltiptext img {
+  max-width:100%;
+}

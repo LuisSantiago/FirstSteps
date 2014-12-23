@@ -29,7 +29,12 @@ class FirstStepsHelper extends WireData implements Module {
 		);
 	}
 	
-	public $steps = array();
+	private $steps = array();
+	
+	public function hasSteps() {
+		if(count($this->steps) > 0) return true;
+		return false;
+	}
 	
 	public function render() {
 		if($this->page->template != 'admin') return;
